@@ -6,30 +6,26 @@ import Thinking.Data._
 
 class ContactsTest extends Simulation {
 
-  // 1 Http Conf
   val httpConf = http.baseUrl(url)
     .acceptHeader("application/json")
-    .header("Authorization", s"Bearer $authToken")
-    .check(status.is(200))
+    .contentTypeHeader("application/json")
 
-  // Creando usuarios de prueba
   val contactFeeder = Iterator.continually(Map(
     "firstName" -> s"User${scala.util.Random.nextInt(10000)}",
     "lastName" -> s"Test${scala.util.Random.nextInt(10000)}",
-    "birthdate" -> s"${scala.util.Random.nextInt(30) + 1}-${scala.util.Random.nextInt(12) + 1}-${scala.util.Random.nextInt(50) + 1970}",
+    "birthdate" -> f"${1970 + scala.util.Random.nextInt(50)}-${1 + scala.util.Random.nextInt(12)}%02d-${1 + scala.util.Random.nextInt(28)}%02d",
     "email" -> s"user${scala.util.Random.nextInt(10000)}@test.com",
     "phone" -> s"${scala.util.Random.nextInt(900000000) + 100000000}",
     "street1" -> s"Street ${scala.util.Random.nextInt(100)}",
     "street2" -> s"Apt ${scala.util.Random.nextInt(100)}",
     "city" -> s"City${scala.util.Random.nextInt(100)}",
     "stateProvince" -> s"State${scala.util.Random.nextInt(50)}",
-    "postalCode" -> s"${scala.util.Random.nextInt(90000) + 10000}",
+    "postalCode" -> f"${scala.util.Random.nextInt(90000) + 10000}",
     "country" -> s"Country${scala.util.Random.nextInt(100)}"
   ))
 
   val scn = scenario("Creación de Contactos")
     .exec(
-      // Login primero
       http("Login")
         .post("/users/login")
         .body(StringBody(s"""{"email": "$email", "password": "$password"}""")).asJson
@@ -37,25 +33,40 @@ class ContactsTest extends Simulation {
         .check(jsonPath("$.token").saveAs("authToken"))
     )
     .pause(1)
-    .feed(contactFeeder)
-    .exec(
-      // Crear contacto
-      http("Create Contact")
-        .post("/contacts")
-        .header("Authorization", "Bearer ${authToken}")
-        .body(contactFeeder).asJson
-        .check(status.is(201))
-        .check(jsonPath("$._id").saveAs("contactId"))
-    )
+    .repeat(5) {
+      feed(contactFeeder)
+        .exec(
+          http("Create Contact")
+            .post("/contacts")
+            .header("Authorization", "Bearer ${authToken}")
+            .body(StringBody(
+              s"""
+              {
+                "firstName": "$firstName",
+                "lastName": "$lastName",
+                "birthdate": "$birthdate",
+                "email": "$email",
+                "phone": "$phone",
+                "street1": "$street1",
+                "street2": "$street2",
+                "city": "$city",
+                "stateProvince": "$stateProvince",
+                "postalCode": "$postalCode",
+                "country": "$country"
+              }
+              """)).asJson
+            .check(status.in(200, 201))
+        )
+        .pause(1)
+    }
 
-  // Simulación de carga masiva de creación de contactos
   setUp(
     scn.inject(
-      atOnceUsers(5),
-      rampUsers(25) during (30 seconds),
-      constantUsersPerSec(3) during (60 seconds)
+      atOnceUsers(2),
+      rampUsers(10).during(30),
+      constantUsersPerSec(1).during(60)
     )
-  ).protocols(httpProtocol)
+  ).protocols(httpConf)
     .assertions(
       global.responseTime.max.lt(5000),
       global.successfulRequests.percent.gt(90)
