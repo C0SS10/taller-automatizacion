@@ -20,7 +20,7 @@ class LoginTest extends Simulation{
         .check(status.is(200)))
         .check(jsonPath("$.token").exists.saveAs("authToken"))
 
-  // 3 Load Scenario
+  // Escenario
   setUp(
     scn.inject(
       atOnceUsers(10), // 10 usuarios simultáneos
