@@ -24,8 +24,8 @@ class LoginTest extends Simulation{
   setUp(
     scn.inject(
       atOnceUsers(10), // 10 usuarios simultáneos
-      rampUsers(10).during(30), // 10 usuarios en 30 segundos
-      constantUsersPerSec(5).during(30) // 5 usuarios por segundo durante 30 segundos
+      rampUsers(10).during(10), // 10 usuarios en 30 segundos
+      constantUsersPerSec(5).during(5) // 5 usuarios por segundo durante 30 segundos
     )
   ).protocols(httpConf)
     .assertions(

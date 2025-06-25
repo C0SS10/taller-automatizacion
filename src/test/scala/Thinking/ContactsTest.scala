@@ -24,41 +24,44 @@ class ContactsTest extends Simulation {
     "country" -> s"Country${scala.util.Random.nextInt(100)}"
   ))
 
+  val loginChain = exec(
+  http("Login")
+    .post("/users/login")
+    .body(StringBody(s"""{"email": "$email", "password": "$password"}""")).asJson
+    .check(status.is(200))
+    .check(jsonPath("$.token").saveAs("authToken"))
+  )
+
   val scn = scenario("Creación de Contactos")
-    .exec(
-      http("Login")
-        .post("/users/login")
-        .body(StringBody(s"""{"email": "$email", "password": "$password"}""")).asJson
-        .check(status.is(200))
-        .check(jsonPath("$.token").saveAs("authToken"))
-    )
-    .pause(1)
-    .repeat(5) {
-      feed(contactFeeder)
-        .exec(
-          http("Create Contact")
-            .post("/contacts")
-            .header("Authorization", "Bearer ${authToken}")
-            .body(StringBody(
-              """
-              {
-                "firstName": "${firstName}",
-                "lastName": "${lastName}",
-                "birthdate": "${birthdate}",
-                "email": "${email}",
-                "phone": "${phone}",
-                "street1": "${street1}",
-                "street2": "${street2}",
-                "city": "${city}",
-                "stateProvince": "${stateProvince}",
-                "postalCode": "${postalCode}",
-                "country": "${country}"
-              }
-              """)).asJson
-            .check(status.in(200, 201))
-        )
-        .pause(1)
-    }
+  .exec(loginChain)
+  .pause(1)
+  .repeat(5) {
+    feed(contactFeeder)
+      .exec(
+        http("Create Contact")
+          .post("/contacts")
+          .header("Authorization", "Bearer ${authToken}")
+          .body(StringBody(
+            """
+            {
+              "firstName": "${firstName}",
+              "lastName": "${lastName}",
+              "birthdate": "${birthdate}",
+              "email": "${email}",
+              "phone": "${phone}",
+              "street1": "${street1}",
+              "street2": "${street2}",
+              "city": "${city}",
+              "stateProvince": "${stateProvince}",
+              "postalCode": "${postalCode}",
+              "country": "${country}"
+            }
+            """)).asJson
+          .check(status.in(200, 201))
+      )
+      .pause(1)
+  }
+
 
   setUp(
     scn.inject(
