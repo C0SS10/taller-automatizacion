@@ -24,12 +24,12 @@ class LoginTest extends Simulation{
   setUp(
     scn.inject(
       atOnceUsers(10), // 10 usuarios simultáneos
-      rampUsers(50) during (30 seconds), // 50 usuarios en 30 segundos
-      constantUsersPerSec(5) during (60 seconds) // 5 usuarios por segundo durante 60 segundos
+      rampUsers(50).during(30), // 50 usuarios en 30 segundos
+      constantUsersPerSec(5).during(60) // 5 usuarios por segundo durante 60 segundos
     )
   ).protocols(httpConf)
     .assertions(
       global.responseTime.max.lt(3000), // Tiempo máximo de respuesta < 3s
       global.successfulRequests.percent.gt(95) // 95% de peticiones exitosas
-    )
+  )
 }
