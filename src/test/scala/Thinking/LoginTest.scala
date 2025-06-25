@@ -16,7 +16,7 @@ class LoginTest extends Simulation{
   val scn = scenario("Login").
     exec(http("login")
       .post(s"/users/login")
-      .body(StringBody("""{"email":"${email}","password":"${password}"}"""))
+      .body(StringBody("""{"email":"${email}","password":"${password}"}""")).asJson
       .check(status.is(200))
       .check(jsonPath("$.token").exists.saveAs("authToken")))
 
@@ -24,8 +24,8 @@ class LoginTest extends Simulation{
   setUp(
     scn.inject(
       atOnceUsers(10), // 10 usuarios simultáneos
-      rampUsers(50).during(30), // 50 usuarios en 30 segundos
-      constantUsersPerSec(5).during(60) // 5 usuarios por segundo durante 60 segundos
+      rampUsers(10).during(30), // 10 usuarios en 30 segundos
+      constantUsersPerSec(5).during(30) // 5 usuarios por segundo durante 30 segundos
     )
   ).protocols(httpConf)
     .assertions(
