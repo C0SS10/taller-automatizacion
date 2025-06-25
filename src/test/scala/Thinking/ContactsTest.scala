@@ -69,7 +69,7 @@ class ContactsTest extends Simulation {
     scn.inject(
       atOnceUsers(2),
       rampUsers(10).during(30),
-      constantUsersPerSec(1).during(60)
+      constantUsersPerSec(2).during(10)
     )
   ).protocols(httpConf)
     .assertions(
