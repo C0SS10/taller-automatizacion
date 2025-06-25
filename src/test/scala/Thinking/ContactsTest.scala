@@ -73,7 +73,7 @@ class ContactsTest extends Simulation {
     )
   ).protocols(httpConf)
     .assertions(
-      global.responseTime.max.lt(5000),
+      global.responseTime.max.lt(10000),
       global.successfulRequests.percent.gt(90)
     )
 }

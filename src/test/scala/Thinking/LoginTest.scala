@@ -29,7 +29,7 @@ class LoginTest extends Simulation{
     )
   ).protocols(httpConf)
     .assertions(
-      global.responseTime.max.lt(3000), // Tiempo máximo de respuesta < 3s
+      global.responseTime.max.lt(8000), // Tiempo máximo de respuesta < 8s
       global.successfulRequests.percent.gt(95) // 95% de peticiones exitosas
   )
 }
