@@ -18,7 +18,7 @@ class ContactsTest extends Simulation {
     "lastName" -> s"Test${scala.util.Random.nextInt(10000)}",
     "birthdate" -> s"${scala.util.Random.nextInt(30) + 1}-${scala.util.Random.nextInt(12) + 1}-${scala.util.Random.nextInt(50) + 1970}",
     "email" -> s"user${scala.util.Random.nextInt(10000)}@test.com",
-    "phone" -> s"${scala.util.Random.nextInt(900000000) + 100000000}"
+    "phone" -> s"${scala.util.Random.nextInt(900000000) + 100000000}",
     "street1" -> s"Street ${scala.util.Random.nextInt(100)}",
     "street2" -> s"Apt ${scala.util.Random.nextInt(100)}",
     "city" -> s"City${scala.util.Random.nextInt(100)}",
