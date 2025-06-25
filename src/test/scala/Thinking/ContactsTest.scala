@@ -42,17 +42,17 @@ class ContactsTest extends Simulation {
             .body(StringBody(
               s"""
               {
-                "firstName": "$firstName",
-                "lastName": "$lastName",
-                "birthdate": "$birthdate",
-                "email": "$email",
-                "phone": "$phone",
-                "street1": "$street1",
-                "street2": "$street2",
-                "city": "$city",
-                "stateProvince": "$stateProvince",
-                "postalCode": "$postalCode",
-                "country": "$country"
+                "firstName": "${firstName}",
+                "lastName": "${lastName}",
+                "birthdate": "${birthdate}",
+                "email": "${email}",
+                "phone": "${phone}",
+                "street1": "${street1}",
+                "street2": "${street2}",
+                "city": "${city}",
+                "stateProvince": "${stateProvince}",
+                "postalCode": "${postalCode}",
+                "country": "${country}"
               }
               """)).asJson
             .check(status.in(200, 201))
