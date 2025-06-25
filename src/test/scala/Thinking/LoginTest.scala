@@ -17,8 +17,8 @@ class LoginTest extends Simulation{
     exec(http("login")
       .post(s"/users/login")
       .body(StringBody("""{"email":"${email}","password":"${password}"}"""))
-      .check(status.is(200)))
-      .check(jsonPath("$.token").exists.saveAs("authToken"))
+      .check(status.is(200))
+      .check(jsonPath("$.token").exists.saveAs("authToken")))
 
   // Escenario
   setUp(
