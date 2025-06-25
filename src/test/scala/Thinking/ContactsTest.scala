@@ -40,7 +40,7 @@ class ContactsTest extends Simulation {
             .post("/contacts")
             .header("Authorization", "Bearer ${authToken}")
             .body(StringBody(
-              s"""
+              """
               {
                 "firstName": "${firstName}",
                 "lastName": "${lastName}",
