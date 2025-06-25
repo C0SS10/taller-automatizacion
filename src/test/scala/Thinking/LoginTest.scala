@@ -1,8 +1,8 @@
-package Demo
+package Thinking
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import Demo.Data._
+import Thinking.Data._
 
 class LoginTest extends Simulation{
 
